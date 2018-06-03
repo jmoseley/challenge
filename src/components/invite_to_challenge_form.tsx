@@ -1,38 +1,14 @@
-import * as dapper from '@convoy/dapper';
 import * as React from 'react';
-import * as moment from 'moment';
-import { Quantity } from '@neutrium/quantity';
-import { connect } from 'react-redux';
 import {
   Field,
-  reduxForm,
   InjectedFormProps,
-  WrappedFieldProps,
-  SubmissionError,
+  reduxForm,
   reset,
+  SubmissionError,
 } from 'redux-form';
-import { Promise as MeteorPromise } from 'meteor/promise';
-import { Meteor } from 'meteor/meteor';
-import * as uuid from 'uuid';
 
-import {
-  ChallengeCreateOptions,
-  ChallengeInviteOptions,
-  Errors,
-} from '../../../imports/models/challenges';
 import { Dispatch } from 'redux';
-
-const STYLES = dapper.compile({
-  challenge: {
-    margin: '0.5em',
-  },
-  title: {
-    margin: 0,
-  },
-  link: {
-    color: 'black',
-  },
-});
+import { ChallengeInviteOptions, Errors } from '../models/challenges';
 
 const validateNotEmpty = (value: string) =>
   !value ? 'Must enter a value' : null;
@@ -50,14 +26,16 @@ const onSubmitFactory = (formName: string) => {
   return async (values: FormData, dispatch: Dispatch<any>, props: Props) => {
     // TODO: It would be nice if we could get this type checking for free. Maybe we add types for the Meteor.call method?
     const args: ChallengeInviteOptions = {
-      email: values.email,
       challengeId: props.challengeId,
+      email: values.email,
     };
 
     try {
-      const result = await new Promise((resolve, reject) => {
+      await new Promise((resolve, reject) => {
         Meteor.call('challenge.invite', args, (error: Meteor.Error, r: any) => {
-          if (error) reject(error);
+          if (error) {
+            reject(error);
+          }
           resolve(r);
         });
       });
@@ -111,13 +89,6 @@ const InviteToChallengeForm = ({
       <button type="submit">Invite</button>
     </form>
   );
-};
-
-// Can we type the state?
-const mapStateToProps = (state: any) => {
-  return {
-    name: state.name,
-  };
 };
 
 export default reduxForm<FormData, Props>({})(InviteToChallengeForm);

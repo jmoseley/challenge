@@ -1,9 +1,6 @@
 import * as dapper from '@convoy/dapper';
-import * as _ from 'lodash';
-import * as querystring from 'querystring';
 import * as React from 'react';
 import { connect } from 'react-redux';
-import styled from 'styled-components';
 
 import NavBar from '../components/nav_bar';
 import AccountInfo from '../components/profile/account_info';
@@ -11,12 +8,12 @@ import NotificationPreferences from '../components/profile/notification_preferen
 
 const STYLES = dapper.compile({
   accountInfo: {
-    flex: '1',
+    background: '#ffffff',
     borderLeft: '1px solid lightgrey',
+    flex: '1',
+    height: '100%',
     marginLeft: '1em',
     padding: '0.5em',
-    background: '#ffffff',
-    height: '100%',
   },
   body: {
     fontFamily: `'Roboto', sans-serif`,

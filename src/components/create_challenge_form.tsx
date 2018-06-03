@@ -1,31 +1,21 @@
 import * as dapper from '@convoy/dapper';
 import * as React from 'react';
-import * as moment from 'moment';
-import { Quantity } from '@neutrium/quantity';
 import { connect } from 'react-redux';
-import {
-  Field,
-  reduxForm,
-  InjectedFormProps,
-  WrappedFieldProps,
-} from 'redux-form';
-import { Promise as MeteorPromise } from 'meteor/promise';
-import { Meteor } from 'meteor/meteor';
-import * as uuid from 'uuid';
+import { Field, InjectedFormProps, reduxForm } from 'redux-form';
 
-import { ChallengeCreateOptions } from '../../../imports/models/challenges';
+import { ChallengeCreateOptions } from '../models/challenges';
 
-const STYLES = dapper.compile({
-  challenge: {
-    margin: '0.5em',
-  },
-  title: {
-    margin: 0,
-  },
-  link: {
-    color: 'black',
-  },
-});
+// const STYLES = dapper.compile({
+//   challenge: {
+//     margin: '0.5em',
+//   },
+//   link: {
+//     color: 'black',
+//   },
+//   title: {
+//     margin: 0,
+//   },
+// });
 
 const validateNotEmpty = (value: string) =>
   !value ? 'Must enter a value' : null;
@@ -42,11 +32,11 @@ const onSubmit = async (values: FormData) => {
   // Bunch of defaults for now.
   const args: { newChallenge: ChallengeCreateOptions } = {
     newChallenge: {
-      name: values.challengeName,
-      startDayOfWeek: 0, // Sunday
-      durationWeeks: 1, // 1 week,
-      repeats: true,
       distanceMiles: parseFloat(values.goal),
+      durationWeeks: 1, // 1 week,
+      name: values.challengeName,
+      repeats: true,
+      startDayOfWeek: 0, // Sunday
     },
   };
   Meteor.call('challenge.create', args);
@@ -93,6 +83,8 @@ const mapStateToProps = (state: any) => {
   };
 };
 
-export default reduxForm({
-  form: 'createChallenge',
-})(CreateChallengeForm);
+export default connect(mapStateToProps)(
+  reduxForm({
+    form: 'createChallenge',
+  })(CreateChallengeForm),
+);

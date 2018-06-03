@@ -1,32 +1,29 @@
 import * as dapper from '@convoy/dapper';
-import { Meteor } from 'meteor/meteor';
 import * as React from 'react';
 import Headroom from 'react-headroom';
-import styled from 'styled-components';
-import { WithRouterProps, withRouter } from 'react-router';
+import { withRouter, WithRouterProps } from 'react-router';
 
-import Button from './button';
 import LoginButton from '../components/login_button';
 import ProfileButton from '../components/profile_button';
+import Button from './button';
 
 const STYLES = dapper.compile({
-  menuWrapper: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingLeft: '1em',
-    paddingRight: '1em',
-
-    borderBottom: '1px solid lightgrey',
-    backgroundColor: '#FFFFFF',
-  },
-  header: {
-    margin: 0,
-    paddingBottom: '0.1em',
-    fontFamily: `'Lobster', sans-serif`,
-  },
   buttons: {
     display: 'flex',
+  },
+  header: {
+    fontFamily: `'Lobster', sans-serif`,
+    margin: 0,
+    paddingBottom: '0.1em',
+  },
+  menuWrapper: {
+    alignItems: 'center',
+    backgroundColor: '#FFFFFF',
+    borderBottom: '1px solid lightgrey',
+    display: 'flex',
+    justifyContent: 'space-between',
+    paddingLeft: '1em',
+    paddingRight: '1em',
   },
 });
 
@@ -38,9 +35,9 @@ export interface Props {
 
 class NavBar extends React.Component<Props & WithRouterProps> {
   // TODO: Fix the types.
-  styles: any = dapper.reactTo(this, STYLES);
+  public styles: any = dapper.reactTo(this, STYLES);
 
-  render() {
+  public render() {
     return (
       <Headroom>
         <div className={this.styles.menuWrapper}>
@@ -49,7 +46,7 @@ class NavBar extends React.Component<Props & WithRouterProps> {
             {this.props.currentUser &&
               this.props.profileButton && <ProfileButton />}
             {this.props.homeButton && (
-              <Button onClick={this._goHome.bind(this)} label="Home" />
+              <Button onClick={this.goHome} label="Home" />
             )}
             <LoginButton currentUser={this.props.currentUser} />
           </div>
@@ -58,9 +55,9 @@ class NavBar extends React.Component<Props & WithRouterProps> {
     );
   }
 
-  _goHome() {
+  private goHome = () => {
     this.props.router.push('/');
-  }
+  };
 }
 
 export default withRouter(NavBar);

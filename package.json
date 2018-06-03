@@ -4,16 +4,21 @@
   "private": true,
   "dependencies": {
     "@convoy/dapper": "^2.0.104",
+    "@neutrium/quantity": "^3.0.7",
     "lodash": "^4.17.10",
+    "luxon": "^1.2.1",
     "react": "^16.4.0",
     "react-dom": "^16.4.0",
+    "react-headroom": "^2.2.2",
     "react-redux": "^5.0.7",
     "react-redux-firebase": "^2.1.4",
     "react-router": "^4.2.0",
     "react-router-redux": "^4.0.8",
     "react-scripts-ts": "2.16.0",
+    "redux": "^4.0.0",
     "redux-interactions": "^2.3.86",
-    "styled-components": "^3.3.0"
+    "styled-components": "^3.3.0",
+    "uuid": "^3.2.1"
   },
   "lint-staged": {
     "*.{js,json,css,md,ts,tsx,jsx}": [
@@ -30,6 +35,7 @@
   "devDependencies": {
     "@types/jest": "^23.0.0",
     "@types/lodash": "^4.14.109",
+    "@types/luxon": "^0.5.2",
     "@types/node": "^10.3.0",
     "@types/react": "^16.3.16",
     "@types/react-dom": "^16.0.5",

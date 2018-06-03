@@ -1,13 +1,12 @@
-import * as React from 'react';
 import * as _ from 'lodash';
-import { Meteor } from 'meteor/meteor';
+import * as React from 'react';
 
 export interface Props {
   user: Meteor.User;
 }
 
 export default class AccountInfo extends React.Component<Props> {
-  render() {
+  public render() {
     return (
       <div>
         <p>Name: {_.get(this.props.user, 'profile.name')}</p>

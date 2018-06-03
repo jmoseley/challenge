@@ -1,8 +1,8 @@
-import { Meteor } from 'meteor/meteor';
-import * as React from 'react';
+import { Quantity } from '@neutrium/quantity';
 import * as _ from 'lodash';
+import * as React from 'react';
 
-import { Activity } from '../../../../imports/models/activities';
+import { Activity } from '../../models/activities';
 
 export interface UserWithActivities extends Meteor.User {
   activities: Activity[];
@@ -14,11 +14,11 @@ export interface Props {
 }
 
 export default class ChallengeProgressDisplay extends React.Component<Props> {
-  render() {
+  public render() {
     const totalMiles = _.reduce(
       this.props.user.activities,
       (sum, a) => {
-        return sum + this._convertMetersToMiles(a.distance);
+        return sum + this.convertMetersToMiles(a.distance);
       },
       0,
     );
@@ -36,7 +36,7 @@ export default class ChallengeProgressDisplay extends React.Component<Props> {
     );
   }
 
-  _convertMetersToMiles(meters: number) {
-    return meters * 0.000621371;
+  private convertMetersToMiles(meters: number): number {
+    return new Quantity(meters, 'm').to('mi');
   }
 }

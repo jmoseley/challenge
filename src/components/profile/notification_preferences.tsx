@@ -1,13 +1,11 @@
-import * as React from 'react';
 import * as _ from 'lodash';
-import { Meteor } from 'meteor/meteor';
+import * as React from 'react';
 import {
-  NOTIFICATION_TYPES,
   NOTIFICATION_EVENTS,
-  NOTIFICATION_EVENT_NAMES,
-  NOTIFICATION_TYPE_NAMES,
+  NOTIFICATION_TYPES,
   SetNotificationPreferencesOptions,
-} from '../../../../imports/preferences';
+} from '../../models/preferences';
+import NotificationEvent from './notification_event';
 
 export interface Props {
   user: Meteor.User;
@@ -15,7 +13,7 @@ export interface Props {
 
 export default class NotificationPreferences extends React.Component<Props> {
   // Set default values/
-  componentWillReceiveProps(nextProps: Props) {
+  public componentWillReceiveProps(nextProps: Props) {
     if (!nextProps.user) {
       return;
     }
@@ -29,7 +27,7 @@ export default class NotificationPreferences extends React.Component<Props> {
       };
     }
   }
-  render() {
+  public render() {
     return (
       <div>
         <h3>Notification Preferences</h3>
@@ -42,7 +40,7 @@ export default class NotificationPreferences extends React.Component<Props> {
             [],
           )}
           onChange={_.partial(
-            this._updatePreference.bind(this),
+            this.updatePreference,
             NOTIFICATION_EVENTS.CHALLENGE_INVITE,
           )}
         />
@@ -56,7 +54,7 @@ export default class NotificationPreferences extends React.Component<Props> {
             [],
           )}
           onChange={_.partial(
-            this._updatePreference.bind(this),
+            this.updatePreference,
             NOTIFICATION_EVENTS.CHALLENGE_ACTIVITY,
           )}
         />
@@ -64,84 +62,25 @@ export default class NotificationPreferences extends React.Component<Props> {
     );
   }
 
-  _updatePreference(
+  private updatePreference = (
     notificationEvent: NOTIFICATION_EVENTS,
     notificationType: NOTIFICATION_TYPES,
     value: boolean,
-  ) {
+  ) => {
     const args: SetNotificationPreferencesOptions = {
+      newValue: value,
       notificationEvent,
       notificationType,
-      newValue: value,
     };
 
     Meteor.call(
       'preferences.notifications.set',
       args,
       (error: Meteor.Error, r: any) => {
-        if (error) alert(error);
+        if (error) {
+          alert(error);
+        }
       },
     );
-  }
-}
-
-class NotificationEvent extends React.Component<{
-  notificationEvent: NOTIFICATION_EVENTS;
-  currentPreferences: NOTIFICATION_TYPES[];
-  onChange: (notificationType: NOTIFICATION_TYPES, value: boolean) => void;
-}> {
-  render() {
-    return (
-      <div>
-        <h4>{NOTIFICATION_EVENT_NAMES[this.props.notificationEvent]}</h4>
-        {/* TODO: Iterate through the list of NOTIFICATION_TYPES so that this list will be generated automatically when we extend the list of notification events or notification types */}
-        <NotificationField
-          notificationEvent={this.props.notificationEvent}
-          notificationType={NOTIFICATION_TYPES.EMAIL}
-          selected={_.includes(
-            this.props.currentPreferences,
-            NOTIFICATION_TYPES.EMAIL,
-          )}
-          onChange={this._onChange.bind(this)}
-        />
-      </div>
-    );
-  }
-
-  _onChange(notificationType: NOTIFICATION_TYPES, value: boolean) {
-    this.props.onChange(notificationType, value);
-  }
-}
-
-class NotificationField extends React.Component<{
-  notificationEvent: NOTIFICATION_EVENTS;
-  notificationType: NOTIFICATION_TYPES;
-  selected?: boolean;
-  onChange: (notificationType: NOTIFICATION_TYPES, value: boolean) => void;
-}> {
-  render() {
-    return (
-      <div>
-        <label
-          htmlFor={`${this.props.notificationType}-${
-            this.props.notificationEvent
-          }`}
-        >
-          {NOTIFICATION_TYPE_NAMES[this.props.notificationType]}
-        </label>
-        <input
-          type="checkbox"
-          checked={this.props.selected}
-          id={`${this.props.notificationType}-${this.props.notificationEvent}`}
-          name={this.props.notificationEvent}
-          value={this.props.notificationType}
-          onChange={this._onChange.bind(this)}
-        />
-      </div>
-    );
-  }
-
-  _onChange(event: any) {
-    this.props.onChange(this.props.notificationType, event.target.checked);
-  }
+  };
 }

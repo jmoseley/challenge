@@ -1,19 +1,19 @@
 import * as dapper from '@convoy/dapper';
-import * as React from 'react';
-import * as moment from 'moment';
 import { Quantity } from '@neutrium/quantity';
+import { Duration } from 'luxon';
+import * as React from 'react';
 
-import { Activity } from '../../../imports/models/activities';
+import { Activity } from '..//models/activities';
 
 const STYLES = dapper.compile({
   activity: {
     margin: '0.5em',
   },
-  title: {
-    margin: 0,
-  },
   link: {
     color: 'black',
+  },
+  title: {
+    margin: 0,
   },
 });
 
@@ -22,15 +22,17 @@ export interface Props {
 }
 
 export default class ActivityCard extends React.Component<Props> {
-  styles: any = dapper.reactTo(this, STYLES);
+  public styles: any = dapper.reactTo(this, STYLES);
 
-  render() {
+  public render() {
     const distance: Quantity = new Quantity(
       `${this.props.activity.distance} m`,
     );
     const miles = distance.to('mi').scalar.toFixed(2);
 
-    const duration = moment.duration(this.props.activity.movingTime, 'seconds');
+    const duration = Duration.fromObject({
+      seconds: this.props.activity.movingTime,
+    });
 
     return (
       <div className={this.styles.activity}>

@@ -1,24 +1,10 @@
 import * as dapper from '@convoy/dapper';
 import * as _ from 'lodash';
-import * as querystring from 'querystring';
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { locationShape } from 'react-router';
 import styled from 'styled-components';
 
-import {
-  Activity,
-  Collection as ActivitiesCollection,
-} from '../../../imports/models/activities';
-import {
-  ChallengeInvite,
-  ChallengeInviteStatus,
-  Collection as ChallengeInvitesCollection,
-} from '../../../imports/models/challenge_invites';
-import {
-  Challenge,
-  Collection as ChallengesCollection,
-} from '../../../imports/models/challenges';
 import AcceptChallengeCard from '../components/accept_challenge_card';
 import ActivityCard from '../components/activity_card';
 import ChallengeCard, {
@@ -26,6 +12,8 @@ import ChallengeCard, {
 } from '../components/challenge_card';
 import CreateChallenge from '../components/create_challenge';
 import NavBar from '../components/nav_bar';
+import { Activity } from '../models/activities';
+import { ChallengeInvite } from '../models/challenge_invites';
 
 const CoverWrapper = styled.div`
   margin: 0;

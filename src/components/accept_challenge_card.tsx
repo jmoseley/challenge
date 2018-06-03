@@ -1,7 +1,7 @@
 import * as React from 'react';
 
-import { Challenge } from '../../../imports/models/challenges';
-import { ChallengeInvite } from '../../../imports/models/challenge_invites';
+import { ChallengeInvite } from '../models/challenge_invites';
+import { Challenge } from '../models/challenges';
 import ChallengeCard from './challenge_card';
 
 export interface Props {
@@ -10,20 +10,18 @@ export interface Props {
 }
 
 export default class AcceptChallengeCard extends React.Component<Props> {
-  render() {
+  public render() {
     return (
       <div>
         <ChallengeCard challenge={this.props.challenge} />
-        <button onClick={this._acceptChallenge.bind(this)}>
-          Accept Challenge
-        </button>
+        <button onClick={this.acceptChallenge}>Accept Challenge</button>
       </div>
     );
   }
 
-  _acceptChallenge() {
+  private acceptChallenge = () => {
     Meteor.call('challenge.accept', {
       challengeInviteId: this.props.challengeInvite._id,
     });
-  }
+  };
 }

@@ -1,22 +1,17 @@
-import * as _ from 'lodash';
 import * as dapper from '@convoy/dapper';
+import * as _ from 'lodash';
+import { DateTime } from 'luxon';
 import * as React from 'react';
-import * as moment from 'moment';
-import { Quantity } from '@neutrium/quantity';
 
-import { Challenge } from '../../../imports/models/challenges';
-import InviteToChallengeForm from './invite_to_challenge_form';
-import { Activity } from '../../../imports/models/activities';
+import { Challenge } from '../models/challenges';
 import ProgressDisplay, {
   UserWithActivities,
 } from './challenges/progress_display';
+import InviteToChallengeForm from './invite_to_challenge_form';
 
 const STYLES = dapper.compile({
   challenge: {
     margin: '0.5em',
-  },
-  title: {
-    margin: 0,
   },
   link: {
     color: 'black',
@@ -24,6 +19,9 @@ const STYLES = dapper.compile({
   small: {
     fontSize: '0.8em',
     paddingRight: '5px',
+  },
+  title: {
+    margin: 0,
   },
 });
 
@@ -40,7 +38,7 @@ export interface State {
 }
 
 export default class ChallengeCard extends React.Component<Props, State> {
-  styles: any = dapper.reactTo(this, STYLES);
+  public styles: any = dapper.reactTo(this, STYLES);
 
   constructor(props: Props) {
     super(props);
@@ -50,33 +48,33 @@ export default class ChallengeCard extends React.Component<Props, State> {
     };
   }
 
-  render() {
+  public render() {
     return (
       <div className={this.styles.challenge}>
         <h3 className={this.styles.title}>{this.props.challenge.name}</h3>
         <span>{this.props.challenge.distanceMiles} miles</span>
         {this.props.challenge.creatorId === Meteor.userId() &&
-          this._renderOptions()}
-        {this._renderParticipants()}
+          this.renderOptions()}
+        {this.renderParticipants()}
       </div>
     );
   }
 
-  _renderOptions() {
+  private renderOptions() {
     return (
       <div>
         {this.state.showInviteForm && (
           <InviteToChallengeForm
             form={`inviteToChallenge-${this.props.challenge._id}`}
             challengeId={this.props.challenge._id}
-            onSubmit={this._hideInviteForm}
+            onSubmit={this.hideInviteForm}
           />
         )}
         {!this.state.showInviteForm && (
           <a
             href={`#invite-${this.props.challenge._id}`}
             className={this.styles.small}
-            onClick={this._showInviteForm}
+            onClick={this.showInviteForm}
           >
             Invite
           </a>
@@ -85,7 +83,7 @@ export default class ChallengeCard extends React.Component<Props, State> {
           <a
             href={`#delete-${this.props.challenge._id}`}
             className={this.styles.small}
-            onClick={this._deleteChallenge}
+            onClick={this.deleteChallenge}
           >
             Delete
           </a>
@@ -94,16 +92,16 @@ export default class ChallengeCard extends React.Component<Props, State> {
     );
   }
 
-  _showInviteForm = (event: React.MouseEvent<HTMLElement>) => {
+  private showInviteForm = (event: React.MouseEvent<HTMLElement>) => {
     event.preventDefault();
     this.setState({ showInviteForm: true });
   };
 
-  _hideInviteForm = () => {
+  private hideInviteForm = () => {
     this.setState({ showInviteForm: false });
   };
 
-  _deleteChallenge = (event: React.MouseEvent<HTMLElement>) => {
+  private deleteChallenge = (event: React.MouseEvent<HTMLElement>) => {
     event.preventDefault();
     if (confirm(`Are you sure you want to delete this challenge?`)) {
       Meteor.call('challenge.delete', {
@@ -112,7 +110,7 @@ export default class ChallengeCard extends React.Component<Props, State> {
     }
   };
 
-  _renderParticipants = () => {
+  private renderParticipants = () => {
     const progressDisplays = [];
 
     for (const user of _.get(
@@ -121,20 +119,20 @@ export default class ChallengeCard extends React.Component<Props, State> {
       [],
     ) as UserWithActivities[]) {
       // Weeks start on Monday.
-      let currentWeekStart = moment()
-        .day(1)
+      let currentWeekStart = DateTime.local()
+        .set({ day: 1 })
         .startOf('day');
 
       // Check if its sunday, and backup a week if so.
-      if (currentWeekStart.isAfter(moment())) {
-        currentWeekStart = currentWeekStart.subtract(1, 'week');
+      if (currentWeekStart > DateTime.local()) {
+        currentWeekStart = currentWeekStart.minus({ weeks: 1 });
       }
       // Filter activities to just the most recent week.
       // Eventually we can display past progress.
       const activities = _.filter(user.activities, a => {
         return (
-          moment(a.startDate).isAfter(currentWeekStart) &&
-          moment(a.startDate).isBefore(currentWeekStart.clone().add(1, 'week'))
+          DateTime.fromISO(a.startDate) > currentWeekStart &&
+          DateTime.fromISO(a.startDate) < currentWeekStart.plus({ weeks: 1 })
         );
       });
       progressDisplays.push(
