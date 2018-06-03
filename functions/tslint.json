@@ -1,9 +1,0 @@
-{
-  "extends": ["tslint:recommended", "tslint-config-prettier"],
-  "linterOptions": {
-    "exclude": [
-      "lib/**/*.js",
-      "node_modules/**/*.ts"
-    ]
-  }
-}
