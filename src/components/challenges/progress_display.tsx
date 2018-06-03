@@ -2,9 +2,9 @@ import { Quantity } from '@neutrium/quantity';
 import * as _ from 'lodash';
 import * as React from 'react';
 
-import { Activity } from '../../models/activities';
+import { Activity, User } from '../../models';
 
-export interface UserWithActivities extends Meteor.User {
+export interface UserWithActivities extends User {
   activities: Activity[];
 }
 
@@ -30,8 +30,7 @@ export default class ChallengeProgressDisplay extends React.Component<Props> {
 
     return (
       <div>
-        {this.props.user.profile.name}: {totalMiles.toFixed(1)} miles -{' '}
-        {percentageText}%
+        {this.props.user.name}: {totalMiles.toFixed(1)} miles - {percentageText}%
       </div>
     );
   }

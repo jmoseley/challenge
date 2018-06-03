@@ -1,21 +1,7 @@
-import * as dapper from '@convoy/dapper';
 import * as React from 'react';
-import { connect } from 'react-redux';
 import { Field, InjectedFormProps, reduxForm } from 'redux-form';
 
-import { ChallengeCreateOptions } from '../models/challenges';
-
-// const STYLES = dapper.compile({
-//   challenge: {
-//     margin: '0.5em',
-//   },
-//   link: {
-//     color: 'black',
-//   },
-//   title: {
-//     margin: 0,
-//   },
-// });
+// import { ChallengeCreateOptions } from '../models';
 
 const validateNotEmpty = (value: string) =>
   !value ? 'Must enter a value' : null;
@@ -30,16 +16,16 @@ export interface FormData {
 const onSubmit = async (values: FormData) => {
   // TODO: It would be nice if we could get this type checking for free. Maybe we add types for the Meteor.call method?
   // Bunch of defaults for now.
-  const args: { newChallenge: ChallengeCreateOptions } = {
-    newChallenge: {
-      distanceMiles: parseFloat(values.goal),
-      durationWeeks: 1, // 1 week,
-      name: values.challengeName,
-      repeats: true,
-      startDayOfWeek: 0, // Sunday
-    },
-  };
-  Meteor.call('challenge.create', args);
+  // const args: { newChallenge: ChallengeCreateOptions } = {
+  //   newChallenge: {
+  //     distanceMiles: parseFloat(values.goal),
+  //     durationWeeks: 1, // 1 week,
+  //     name: values.challengeName,
+  //     repeats: true,
+  //     startDayOfWeek: 0, // Sunday
+  //   },
+  // };
+  // Meteor.call('challenge.create', args);
 };
 
 const renderField = ({
@@ -76,15 +62,6 @@ const CreateChallengeForm = ({ handleSubmit }: InjectedFormProps) => {
   );
 };
 
-// Can we type the state?
-const mapStateToProps = (state: any) => {
-  return {
-    name: state.name,
-  };
-};
-
-export default connect(mapStateToProps)(
-  reduxForm({
-    form: 'createChallenge',
-  })(CreateChallengeForm),
-);
+export default reduxForm({
+  form: 'createChallenge',
+})(CreateChallengeForm);

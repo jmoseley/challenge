@@ -4,6 +4,7 @@ import { DateTime } from 'luxon';
 import * as React from 'react';
 
 import { Challenge } from '../models/challenges';
+import { User } from '../models/user';
 import ProgressDisplay, {
   UserWithActivities,
 } from './challenges/progress_display';
@@ -30,6 +31,7 @@ export interface ChallengeWithUsersAndActivities extends Challenge {
 }
 
 export interface Props {
+  currentUser: User;
   challenge: ChallengeWithUsersAndActivities;
 }
 
@@ -53,7 +55,7 @@ export default class ChallengeCard extends React.Component<Props, State> {
       <div className={this.styles.challenge}>
         <h3 className={this.styles.title}>{this.props.challenge.name}</h3>
         <span>{this.props.challenge.distanceMiles} miles</span>
-        {this.props.challenge.creatorId === Meteor.userId() &&
+        {this.props.challenge.creatorId === this.props.currentUser._id &&
           this.renderOptions()}
         {this.renderParticipants()}
       </div>
@@ -104,9 +106,9 @@ export default class ChallengeCard extends React.Component<Props, State> {
   private deleteChallenge = (event: React.MouseEvent<HTMLElement>) => {
     event.preventDefault();
     if (confirm(`Are you sure you want to delete this challenge?`)) {
-      Meteor.call('challenge.delete', {
-        challengeId: this.props.challenge._id,
-      });
+      // Meteor.call('challenge.delete', {
+      //   challengeId: this.props.challenge._id,
+      // });
     }
   };
 
@@ -131,8 +133,8 @@ export default class ChallengeCard extends React.Component<Props, State> {
       // Eventually we can display past progress.
       const activities = _.filter(user.activities, a => {
         return (
-          DateTime.fromISO(a.startDate) > currentWeekStart &&
-          DateTime.fromISO(a.startDate) < currentWeekStart.plus({ weeks: 1 })
+          DateTime.fromJSDate(a.startDate) > currentWeekStart &&
+          DateTime.fromJSDate(a.startDate) < currentWeekStart.plus({ weeks: 1 })
         );
       });
       progressDisplays.push(

@@ -1,6 +1,7 @@
 import * as dapper from '@convoy/dapper';
 import * as React from 'react';
 
+import { User } from '../models/user';
 import Button from './button';
 
 // http://www.colourlovers.com/palette/92095/Giant_Goldfish
@@ -26,7 +27,7 @@ const STYLES = dapper.compile({
 });
 
 export interface Props {
-  currentUser: Meteor.User;
+  currentUser: User;
 }
 
 export default class LoginButton extends React.Component<Props> {
@@ -38,15 +39,15 @@ export default class LoginButton extends React.Component<Props> {
         <div className={this.styles.container}>
           <div>
             <span className={this.styles.userName}>
-              {this.props.currentUser.profile.name}
+              {this.props.currentUser.name}
             </span>
           </div>
-          <Button onClick={this.logout} label="Logout" />
+          <Button label="Logout" />
         </div>
       );
     } else {
       return (
-        <span onClick={this.login}>
+        <span>
           <img
             className={this.styles.button}
             src="/imgs/btn_strava_connectwith_light.png"
@@ -56,13 +57,13 @@ export default class LoginButton extends React.Component<Props> {
     }
   }
 
-  private logout() {
-    Meteor.logout();
-  }
+  // private logout() {
+  //   Meteor.logout();
+  // }
 
-  private login() {
-    (Meteor as any).loginWithStrava({
-      requestPermissions: ['public', 'view_private'],
-    });
-  }
+  // private login() {
+  //   (Meteor as any).loginWithStrava({
+  //     requestPermissions: ['public', 'view_private'],
+  //   });
+  // }
 }

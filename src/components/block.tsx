@@ -9,7 +9,7 @@ export interface IProps {
 const styledDiv: StyledFunction<IProps & React.HTMLProps<HTMLInputElement>> =
   styled.div;
 
-export const Block = styledDiv`
+const Block = styledDiv`
   background-color: white;
   padding: 5px 20px 10px 20px;
   margin: 15px 15px;
@@ -39,3 +39,5 @@ export const Block = styledDiv`
     padding: 0 0 10px 0;
   }
 `;
+
+export default Block;

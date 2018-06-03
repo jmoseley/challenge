@@ -14,7 +14,7 @@ const STYLES = dapper.compile({
 });
 
 export interface Props {
-  onClick: () => void;
+  onClick?: (event?: any) => void;
   label: string;
 }
 
@@ -24,10 +24,16 @@ export default class Button extends React.Component<Props> {
   public render() {
     return (
       <div>
-        <span onClick={this.props.onClick} className={this.styles.button}>
+        <span onClick={this.onClick} className={this.styles.button}>
           {this.props.label}
         </span>
       </div>
     );
   }
+
+  private onClick = (event: any) => {
+    if (this.props.onClick) {
+      this.props.onClick(event);
+    }
+  };
 }

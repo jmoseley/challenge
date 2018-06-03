@@ -1,18 +1,16 @@
 import * as React from 'react';
-import { withRouter, WithRouterProps } from 'react-router';
+import { Link } from 'react-router-dom';
 
 import Button from './button';
 
 export interface Props {}
 
-class ProfileButton extends React.Component<Props & WithRouterProps> {
+export default class ProfileButton extends React.Component<Props> {
   public render() {
-    return <Button onClick={this.onClick} label="Profile" />;
+    return (
+      <Link to="/profile">
+        <Button label="Profile" />
+      </Link>
+    );
   }
-
-  private onClick = () => {
-    this.props.router.push('/profile');
-  };
 }
-
-export default withRouter(ProfileButton);

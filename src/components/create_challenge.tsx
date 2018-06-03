@@ -1,6 +1,5 @@
 import * as dapper from '@convoy/dapper';
 import * as React from 'react';
-import { connect } from 'react-redux';
 
 import CreateChallengeForm from './create_challenge_form';
 
@@ -16,13 +15,7 @@ const STYLES = dapper.compile({
   },
 });
 
-export interface StateProps {
-  name: string;
-}
-
-export interface Props extends StateProps {}
-
-class CreateChallenge extends React.Component<Props> {
+export default class CreateChallenge extends React.Component {
   public styles: any = dapper.reactTo(this, STYLES);
 
   public render() {
@@ -34,12 +27,3 @@ class CreateChallenge extends React.Component<Props> {
     );
   }
 }
-
-// Can we type the state?
-const mapStateToProps = (state: any) => {
-  return {
-    name: state.name,
-  };
-};
-
-export default connect<StateProps>(mapStateToProps)(CreateChallenge);

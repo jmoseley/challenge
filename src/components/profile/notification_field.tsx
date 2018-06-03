@@ -6,7 +6,7 @@ import {
   NOTIFICATION_TYPES,
 } from '../../models/preferences';
 
-class NotificationField extends React.Component<{
+export default class NotificationField extends React.Component<{
   notificationEvent: NOTIFICATION_EVENTS;
   notificationType: NOTIFICATION_TYPES;
   selected?: boolean;
@@ -38,5 +38,3 @@ class NotificationField extends React.Component<{
     this.props.onChange(this.props.notificationType, event.target.checked);
   };
 }
-
-export default NotificationField;

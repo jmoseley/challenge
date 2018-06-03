@@ -21,3 +21,9 @@ export interface SetNotificationPreferencesOptions {
   notificationType: NOTIFICATION_TYPES;
   newValue: boolean;
 }
+
+export interface Preferences {
+  notifications?: {
+    [key: string]: NOTIFICATION_TYPES[];
+  };
+}

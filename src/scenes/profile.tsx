@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import NavBar from '../components/nav_bar';
 import AccountInfo from '../components/profile/account_info';
 import NotificationPreferences from '../components/profile/notification_preferences';
+import { User } from '../models/user';
 
 const STYLES = dapper.compile({
   accountInfo: {
@@ -34,23 +35,23 @@ const STYLES = dapper.compile({
   },
 });
 
-export interface DataProps {
-  loading: boolean;
-  currentUser: Meteor.User;
-}
-
 export interface StateProps {
-  foo: string;
+  loading: boolean;
+  currentUser: User;
 }
 
 export interface PropParams {}
 
-export interface Props extends DataProps, StateProps, PropParams {}
+export interface Props extends StateProps, PropParams {}
 
 class ProfileScene extends React.Component<Props> {
   public styles: any = dapper.reactTo(this, STYLES);
 
   public render() {
+    if (!this.props.currentUser) {
+      return <div />;
+    }
+
     return (
       <div className={this.styles.body}>
         <NavBar currentUser={this.props.currentUser} homeButton={true} />
@@ -67,17 +68,9 @@ class ProfileScene extends React.Component<Props> {
   }
 }
 
-// POC that the redux connection works.
 const mapStateToProps = (state: any) => ({
-  foo: 'bar',
+  currentUser: state.user,
+  loading: false,
 });
-
-// function dataLoader(p: PropParams): DataProps {
-//   const userDataSub = Meteor.subscribe('userData');
-//   return {
-//     loading: !userDataSub.ready(),
-//     currentUser: Meteor.users.findOne({ _id: Meteor.userId() }),
-//   };
-// }
 
 export default connect<StateProps>(mapStateToProps)(ProfileScene);

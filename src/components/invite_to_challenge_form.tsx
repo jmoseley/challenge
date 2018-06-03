@@ -8,7 +8,8 @@ import {
 } from 'redux-form';
 
 import { Dispatch } from 'redux';
-import { ChallengeInviteOptions, Errors } from '../models/challenges';
+import { Errors } from '../models';
+// import { ChallengeInviteOptions, Errors } from '../models';
 
 const validateNotEmpty = (value: string) =>
   !value ? 'Must enter a value' : null;
@@ -25,19 +26,19 @@ export interface Props {
 const onSubmitFactory = (formName: string) => {
   return async (values: FormData, dispatch: Dispatch<any>, props: Props) => {
     // TODO: It would be nice if we could get this type checking for free. Maybe we add types for the Meteor.call method?
-    const args: ChallengeInviteOptions = {
-      challengeId: props.challengeId,
-      email: values.email,
-    };
+    // const args: ChallengeInviteOptions = {
+    //   challengeId: props.challengeId,
+    //   email: values.email,
+    // };
 
     try {
       await new Promise((resolve, reject) => {
-        Meteor.call('challenge.invite', args, (error: Meteor.Error, r: any) => {
-          if (error) {
-            reject(error);
-          }
-          resolve(r);
-        });
+        // Meteor.call('challenge.invite', args, (error: Meteor.Error, r: any) => {
+        //   if (error) {
+        //     reject(error);
+        //   }
+        //   resolve(r);
+        // });
       });
     } catch (err) {
       switch (err.error) {
@@ -78,7 +79,7 @@ const InviteToChallengeForm = ({
   form,
 }: InjectedFormProps<FormData, Props>) => {
   return (
-    <form onSubmit={handleSubmit(onSubmitFactory(form))}>
+    <form onSubmit={handleSubmit(onSubmitFactory(form) as any)}>
       <Field
         label="Email"
         name="email"

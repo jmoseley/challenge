@@ -17,7 +17,7 @@
     "strictNullChecks": true,
     "suppressImplicitAnyIndexErrors": true,
     "noUnusedLocals": true,
-    "typeRoots": ["node_modules/@types", "typings"]
+    "typeRoots": ["node_modules/@types", "custom_typings"]
   },
   "exclude": [
     "node_modules",
@@ -26,7 +26,6 @@
     "acceptance-tests",
     "webpack",
     "jest",
-    "src/setupTests.ts",
-    "functions"
+    "src/setupTests.ts"
   ]
 }

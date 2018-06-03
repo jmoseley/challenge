@@ -1,10 +1,11 @@
 import * as dapper from '@convoy/dapper';
 import * as React from 'react';
 import Headroom from 'react-headroom';
-import { withRouter, WithRouterProps } from 'react-router';
 
+import { Link } from 'react-router-dom';
 import LoginButton from '../components/login_button';
 import ProfileButton from '../components/profile_button';
+import { User } from '../models/user';
 import Button from './button';
 
 const STYLES = dapper.compile({
@@ -28,12 +29,12 @@ const STYLES = dapper.compile({
 });
 
 export interface Props {
-  currentUser: Meteor.User;
+  currentUser: User;
   profileButton?: boolean;
   homeButton?: boolean;
 }
 
-class NavBar extends React.Component<Props & WithRouterProps> {
+export default class NavBar extends React.Component<Props> {
   // TODO: Fix the types.
   public styles: any = dapper.reactTo(this, STYLES);
 
@@ -46,7 +47,9 @@ class NavBar extends React.Component<Props & WithRouterProps> {
             {this.props.currentUser &&
               this.props.profileButton && <ProfileButton />}
             {this.props.homeButton && (
-              <Button onClick={this.goHome} label="Home" />
+              <Link to="/">
+                <Button label="Home" />
+              </Link>
             )}
             <LoginButton currentUser={this.props.currentUser} />
           </div>
@@ -54,10 +57,4 @@ class NavBar extends React.Component<Props & WithRouterProps> {
       </Headroom>
     );
   }
-
-  private goHome = () => {
-    this.props.router.push('/');
-  };
 }
-
-export default withRouter(NavBar);
