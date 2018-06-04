@@ -1,11 +1,14 @@
 import * as dapper from '@convoy/dapper';
+import * as _ from 'lodash';
 import * as React from 'react';
 import Headroom from 'react-headroom';
 
+import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import LoginButton from '../components/login_button';
 import ProfileButton from '../components/profile_button';
 import { User } from '../models/user';
+import { GlobalState } from '../state';
 import Button from './button';
 
 const STYLES = dapper.compile({
@@ -28,13 +31,16 @@ const STYLES = dapper.compile({
   },
 });
 
-export interface Props {
-  currentUser: User;
+export interface StateProps {
+  currentUser?: User;
+}
+
+export interface Props extends StateProps {
   profileButton?: boolean;
   homeButton?: boolean;
 }
 
-export default class NavBar extends React.Component<Props> {
+class NavBar extends React.Component<Props> {
   // TODO: Fix the types.
   public styles: any = dapper.reactTo(this, STYLES);
 
@@ -51,10 +57,18 @@ export default class NavBar extends React.Component<Props> {
                 <Button label="Home" />
               </Link>
             )}
-            <LoginButton currentUser={this.props.currentUser} />
+            <LoginButton />
           </div>
         </div>
       </Headroom>
     );
   }
 }
+
+const mapStateToProps = (state: GlobalState) => {
+  return {
+    currentUser: _.get(state, 'user.user'),
+  };
+};
+
+export default connect(mapStateToProps)(NavBar);

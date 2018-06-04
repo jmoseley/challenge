@@ -13,6 +13,7 @@ import ChallengeCard, {
 import CreateChallenge from '../components/create_challenge';
 import NavBar from '../components/nav_bar';
 import { Activity, ChallengeInvite, User } from '../models';
+import { GlobalState } from '../state';
 
 const CoverWrapper = styled.div`
   margin: 0;
@@ -54,7 +55,7 @@ const STYLES = dapper.compile({
 });
 
 export interface StateProps {
-  currentUser: User;
+  currentUser?: User;
   loading?: boolean;
   recentRides: Activity[];
   challenges: ChallengeWithUsersAndActivities[];
@@ -73,7 +74,7 @@ class HomeScene extends React.Component<Props> {
   public render() {
     return (
       <div className={this.styles.body}>
-        <NavBar currentUser={this.props.currentUser} profileButton={true} />
+        <NavBar profileButton={true} />
         {this.renderCover()}
         {this.renderUserData()}
       </div>
@@ -124,7 +125,10 @@ class HomeScene extends React.Component<Props> {
     return (
       <div>
         {this.props.challenges.map(challenge => {
-          if (!_.includes(challenge.members, this.props.currentUser._id)) {
+          if (
+            !this.props.currentUser ||
+            !_.includes(challenge.members, this.props.currentUser._id)
+          ) {
             return;
           }
 
@@ -160,7 +164,7 @@ class HomeScene extends React.Component<Props> {
             c => c._id === ci.challengeId,
           );
 
-          if (!challenge) {
+          if (!challenge || !this.props.currentUser) {
             // console.error(`Unable to find challenge for challengeInvite`);
             return;
           }
@@ -180,10 +184,10 @@ class HomeScene extends React.Component<Props> {
   };
 }
 
-const mapStateToProps = (state: any) => ({
+const mapStateToProps = (state: GlobalState) => ({
   challengeInvites: [],
   challenges: [],
-  currentUser: state.user,
+  currentUser: _.get(state, 'user.user'),
   loading: false,
   recentRides: [],
 });

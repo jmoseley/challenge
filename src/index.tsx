@@ -13,6 +13,7 @@ import { reducer as formReducer } from 'redux-form';
 import { combineInteractions } from 'redux-interactions';
 
 import './index.css';
+import * as interactions from './interactions';
 import registerServiceWorker from './registerServiceWorker';
 import Home from './scenes/home';
 import Profile from './scenes/profile';
@@ -25,7 +26,7 @@ const middleware = routerMiddleware(history);
 const store = createStore(
   combineReducers({
     ...combineInteractions({
-      // Eventually we'll have some interactions.
+      user: interactions.UserInteraction,
     }),
     form: formReducer,
     routing: routerReducer,

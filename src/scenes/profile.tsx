@@ -54,7 +54,7 @@ class ProfileScene extends React.Component<Props> {
 
     return (
       <div className={this.styles.body}>
-        <NavBar currentUser={this.props.currentUser} homeButton={true} />
+        <NavBar homeButton={true} />
         <div className={this.styles.main}>
           <div className={this.styles.preferences}>
             <NotificationPreferences user={this.props.currentUser} />

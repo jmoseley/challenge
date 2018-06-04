@@ -1,7 +1,13 @@
 import * as dapper from '@convoy/dapper';
+import * as _ from 'lodash';
 import * as React from 'react';
+import { connect } from 'react-redux';
 
+import { UserInteraction } from '../interactions';
 import { User } from '../models/user';
+import RSA from '../oauth_providers/auth_service';
+import { stravaProvider } from '../oauth_providers/strava';
+import { GlobalState } from '../state';
 import Button from './button';
 
 // http://www.colourlovers.com/palette/92095/Giant_Goldfish
@@ -26,11 +32,14 @@ const STYLES = dapper.compile({
   },
 });
 
-export interface Props {
-  currentUser: User;
+export interface StateProps {
+  currentUser?: User;
+  doLogin: (user: User, accessToken: string) => Promise<void>;
 }
 
-export default class LoginButton extends React.Component<Props> {
+export interface Props extends StateProps {}
+
+class LoginButton extends React.Component<Props> {
   public styles: any = dapper.reactTo(this, STYLES);
 
   public render() {
@@ -47,7 +56,7 @@ export default class LoginButton extends React.Component<Props> {
       );
     } else {
       return (
-        <span>
+        <span onClick={this.onClickLogin}>
           <img
             className={this.styles.button}
             src="/imgs/btn_strava_connectwith_light.png"
@@ -57,13 +66,20 @@ export default class LoginButton extends React.Component<Props> {
     }
   }
 
-  // private logout() {
-  //   Meteor.logout();
-  // }
+  private onClickLogin = async (event: any) => {
+    event.preventDefault();
 
-  // private login() {
-  //   (Meteor as any).loginWithStrava({
-  //     requestPermissions: ['public', 'view_private'],
-  //   });
-  // }
+    const session = await RSA.acquireTokenAsync(stravaProvider);
+    this.props.doLogin(session.user, session.accessToken);
+  };
 }
+
+const mapStateToProps = (state: GlobalState) => {
+  return {
+    currentUser: _.get(state, 'user.user'),
+    // https://github.com/Microsoft/TypeScript/issues/4881
+    doLogin: UserInteraction.loginUserWithStrava as any,
+  };
+};
+
+export default connect(mapStateToProps)(LoginButton);
