@@ -1,6 +1,7 @@
 import { User } from '../models';
 
 export interface GlobalState {
+  firebase: any; // :(
   user: UserState;
 }
 

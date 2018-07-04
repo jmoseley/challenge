@@ -5,11 +5,11 @@ import Headroom from 'react-headroom';
 
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import LoginButton from '../components/login_button';
 import ProfileButton from '../components/profile_button';
 import { User } from '../models/user';
 import { GlobalState } from '../state';
 import Button from './button';
+import SignInComponent from './signin';
 
 const STYLES = dapper.compile({
   buttons: {
@@ -57,7 +57,7 @@ class NavBar extends React.Component<Props> {
                 <Button label="Home" />
               </Link>
             )}
-            <LoginButton />
+            <SignInComponent />
           </div>
         </div>
       </Headroom>

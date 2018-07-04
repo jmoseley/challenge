@@ -1,7 +1,6 @@
 import * as functions from 'firebase-functions';
 import * as _ from 'lodash';
 import { StravaActions } from '../actions';
-import { validateCors } from '../lib/cors';
 import * as strava from '../lib/strava';
 import createHandler from './base';
 

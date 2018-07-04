@@ -1,5 +1,4 @@
 import * as querystring from 'querystring';
-import { validateCors } from '../lib/cors';
 import createHandler from './base';
 
 const CLIENT_ID = '22336';

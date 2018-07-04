@@ -1,3 +1,4 @@
+/* tslint:disable */
 /**
  * Strava API v3
  * Strava API

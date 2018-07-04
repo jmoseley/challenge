@@ -1,5 +1,6 @@
 import * as functions from 'firebase-functions';
 import * as _ from 'lodash';
+import { validateCors } from '../lib/cors';
 
 const createHandler = (
   handlerFn: (request: functions.Request) => Promise<any>,
