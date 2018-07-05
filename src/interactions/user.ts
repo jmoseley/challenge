@@ -2,6 +2,7 @@ import { UserInfo } from 'firebase';
 import update from 'immutability-helper';
 import { reducer } from 'redux-interactions';
 
+import log from '../lib/log';
 import { User } from '../models';
 import RSA from '../oauth_providers/auth_service';
 import { stravaProvider } from '../oauth_providers/strava';
@@ -15,7 +16,8 @@ const unauthenticatedState: UserState = {
 const initialState = { ...unauthenticatedState };
 
 const stravaSession = RSA.restoreSession(stravaProvider);
-if (stravaSession) {
+if (stravaSession && stravaSession.accessToken) {
+  log.info(`stravaSession`, stravaSession);
   initialState.services = {
     strava: { accessToken: stravaSession.accessToken },
   };
@@ -28,16 +30,11 @@ class UserInteraction extends BaseInteraction {
   }
 
   @reducer
-  public loginUserWithStrava(
-    scopedState: UserState,
-    user: User,
-    accessToken: string,
-  ) {
+  public loginUserWithStrava(scopedState: UserState, accessToken: string) {
     return update(scopedState, {
       services: update(scopedState.services || {}, {
         strava: { $set: { accessToken } },
       }),
-      user: { $set: user },
     });
   }
 

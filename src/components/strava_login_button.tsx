@@ -4,6 +4,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 
 import { UserInteraction } from '../interactions';
+import log from '../lib/log';
 import { User } from '../models/user';
 import RSA from '../oauth_providers/auth_service';
 import { stravaProvider } from '../oauth_providers/strava';
@@ -34,7 +35,7 @@ const STYLES = dapper.compile({
 
 export interface StateProps {
   currentUser?: User;
-  doLogin: (user: User, accessToken: string) => Promise<void>;
+  doLogin: (accessToken: string) => Promise<void>;
 }
 
 export interface Props extends StateProps {}
@@ -70,7 +71,10 @@ class StravaLoginButton extends React.Component<Props> {
     event.preventDefault();
 
     const session = await RSA.acquireTokenAsync(stravaProvider);
-    this.props.doLogin(session.user, session.accessToken);
+    if (session) {
+      log.info(`onClickLogin`, session);
+      this.props.doLogin(session.accessToken);
+    }
   };
 }
 

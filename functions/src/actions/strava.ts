@@ -14,7 +14,6 @@ class StravaActions {
       client_secret: CLIENT_SECRET,
       code,
     });
-    console.log(result);
 
     return _.get(result.data, 'access_token');
   }

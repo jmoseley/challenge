@@ -13,9 +13,10 @@ import ChallengeCard, {
 } from '../components/challenge_card';
 import CreateChallenge from '../components/create_challenge';
 import NavBar from '../components/nav_bar';
+import StravaLoginButton from '../components/strava_login_button';
 // import Log from '../lib/log';
-import { Activity, ChallengeInvite, User } from '../models';
-import { GlobalState } from '../state';
+import { Activity, ChallengeInvite } from '../models';
+import { GlobalState, UserState } from '../state';
 
 if (process.env.NODE_ENV !== 'production') {
   localStorage.setItem('debug', 'challenge-app:*');
@@ -61,7 +62,7 @@ const STYLES = dapper.compile({
 });
 
 export interface StateProps {
-  currentUser?: User;
+  userState: UserState;
   loading?: boolean;
   recentRides: Activity[];
   challenges: ChallengeWithUsersAndActivities[];
@@ -88,7 +89,7 @@ class HomeScene extends React.Component<Props> {
   }
 
   private renderUserData = () => {
-    if (!this.props.currentUser) {
+    if (!this.props.userState.isLoggedIn) {
       return null;
     }
 
@@ -107,16 +108,14 @@ class HomeScene extends React.Component<Props> {
             </div>
           </div>
         </div>
-        <div className={this.styles.recentRides}>
-          <h2 className={this.styles.heading}>Recent Rides</h2>
-          <div>{this.renderRecentRides()}</div>
-        </div>
+
+        <div className={this.styles.recentRides}>{this.renderSidebar()}</div>
       </div>
     );
   };
 
   private renderCover = () => {
-    if (this.props.currentUser) {
+    if (this.props.userState.isLoggedIn) {
       return null;
     }
 
@@ -132,20 +131,37 @@ class HomeScene extends React.Component<Props> {
       <div>
         {this.props.challenges.map(challenge => {
           if (
-            !this.props.currentUser ||
-            !_.includes(challenge.members, this.props.currentUser.id)
+            !this.props.userState.user ||
+            !_.includes(challenge.members, this.props.userState.user.id)
           ) {
             return;
           }
 
           return (
             <ChallengeCard
-              currentUser={this.props.currentUser}
+              currentUser={this.props.userState.user}
               challenge={challenge}
               key={challenge._id}
             />
           );
         })}
+      </div>
+    );
+  };
+
+  private renderSidebar = () => {
+    if (!_.get(this.props.userState, 'services.strava')) {
+      return (
+        <div>
+          <StravaLoginButton />
+        </div>
+      );
+    }
+
+    return (
+      <div>
+        <h2 className={this.styles.heading}>Recent Rides</h2>
+        <div>{this.renderRecentRides()}</div>
       </div>
     );
   };
@@ -170,7 +186,7 @@ class HomeScene extends React.Component<Props> {
             c => c._id === ci.challengeId,
           );
 
-          if (!challenge || !this.props.currentUser) {
+          if (!challenge || !this.props.userState.user) {
             // console.error(`Unable to find challenge for challengeInvite`);
             return;
           }
@@ -178,7 +194,7 @@ class HomeScene extends React.Component<Props> {
           return (
             <div key={ci._id}>
               <AcceptChallengeCard
-                currentUser={this.props.currentUser}
+                currentUser={this.props.userState.user}
                 challenge={challenge}
                 challengeInvite={ci}
               />
@@ -194,9 +210,9 @@ const mapStateToProps = (state: GlobalState) => {
   return {
     challengeInvites: [],
     challenges: [],
-    currentUser: _.get(state, 'interactions.user.user'),
     loading: !_.get(state, 'firebase.auth.isLoaded', false),
     recentRides: [],
+    userState: _.get(state, 'interactions.user'),
   };
 };
 

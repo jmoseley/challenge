@@ -1,6 +1,7 @@
 import axios, { AxiosInstance } from 'axios';
 import * as _ from 'lodash';
 import { User } from '../models';
+import log from './log';
 
 export interface ApiClient {
   buildStravaOauthUrl(): Promise<string>;
@@ -30,6 +31,7 @@ export class FirebaseApiClient implements ApiClient {
     const result = await this.httpClient.get(
       `/authorizeStravaUser?code=${code}`,
     );
+    log.info('authorizeStravaUser', result);
 
     return _.get(result, 'data');
   }
