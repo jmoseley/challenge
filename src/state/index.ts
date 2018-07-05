@@ -2,7 +2,9 @@ import { User } from '../models';
 
 export interface GlobalState {
   firebase: any; // :(
-  user: UserState;
+  interactions: {
+    user: UserState;
+  };
 }
 
 export interface UserState {

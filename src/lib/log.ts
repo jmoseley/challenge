@@ -5,34 +5,46 @@ const BASE = 'challenge-app';
 class Log {
   public generateMessage(
     level: string,
-    message: object | string,
-    source?: string,
+    source: string,
+    message: Array<object | string | null | undefined>,
   ) {
     // Set the prefix which will cause debug to enable the message
     const namespace = `${BASE}:${level}`;
     const log = debug(namespace);
 
     if (source) {
-      log(source, message);
+      log(source, ...message);
     } else {
-      log(message);
+      (log as any)(...message);
     }
   }
 
-  public trace(message: object | string, source?: string) {
-    return this.generateMessage('trace', message, source);
+  public trace(
+    source: string,
+    ...message: Array<object | string | null | undefined>
+  ) {
+    return this.generateMessage('trace', source, message);
   }
 
-  public info(message: object | string, source?: string) {
-    return this.generateMessage('info', message, source);
+  public info(
+    source: string,
+    ...message: Array<object | string | null | undefined>
+  ) {
+    return this.generateMessage('info', source, message);
   }
 
-  public warn(message: object | string, source?: string) {
-    return this.generateMessage('warn', message, source);
+  public warn(
+    source: string,
+    ...message: Array<object | string | null | undefined>
+  ) {
+    return this.generateMessage('warn', source, message);
   }
 
-  public error(message: object | string, source?: string) {
-    return this.generateMessage('error', message, source);
+  public error(
+    source: string,
+    ...message: Array<object | string | null | undefined>
+  ) {
+    return this.generateMessage('error', source, message);
   }
 }
 

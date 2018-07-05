@@ -13,7 +13,7 @@ import ChallengeCard, {
 } from '../components/challenge_card';
 import CreateChallenge from '../components/create_challenge';
 import NavBar from '../components/nav_bar';
-import Log from '../lib/log';
+// import Log from '../lib/log';
 import { Activity, ChallengeInvite, User } from '../models';
 import { GlobalState } from '../state';
 
@@ -133,7 +133,7 @@ class HomeScene extends React.Component<Props> {
         {this.props.challenges.map(challenge => {
           if (
             !this.props.currentUser ||
-            !_.includes(challenge.members, this.props.currentUser._id)
+            !_.includes(challenge.members, this.props.currentUser.id)
           ) {
             return;
           }
@@ -191,36 +191,13 @@ class HomeScene extends React.Component<Props> {
 }
 
 const mapStateToProps = (state: GlobalState) => {
-  Log.info(state);
   return {
     challengeInvites: [],
     challenges: [],
-    currentUser: getUserFromStateOrAuth(state),
-    loading: !_.get(state, 'firebase.auth.isLoaded', true),
+    currentUser: _.get(state, 'interactions.user.user'),
+    loading: !_.get(state, 'firebase.auth.isLoaded', false),
     recentRides: [],
   };
 };
-
-function getUserFromStateOrAuth(state: GlobalState): User | undefined {
-  if (_.get(state, 'user.user')) {
-    return _.get(state, 'user.user');
-  }
-
-  if (
-    _.get(state, 'firebase.auth.isLoaded') &&
-    !_.get(state, 'firebase.auth.isEmpty', true)
-  ) {
-    return {
-      _id: _.get(state, 'firebase.auth.id'),
-      createdAt: _.get(state, 'firebase.auth.createdAt'),
-      email: _.get(state, 'firebase.auth.email'),
-      name: _.get(state, 'firebase.auth.DisplayName'),
-      preferences: {},
-      updatedAt: _.get(state, 'firebase.auth.updatedAt'),
-    };
-  }
-
-  return;
-}
 
 export default withFirebase(connect<StateProps>(mapStateToProps)(HomeScene));

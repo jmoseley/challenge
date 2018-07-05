@@ -1,7 +1,7 @@
-import { BaseModel } from './base';
 import { Preferences } from './preferences';
 
-export interface User extends BaseModel {
+export interface User {
+  id: string;
   name: string;
   email: string;
   preferences: Preferences;

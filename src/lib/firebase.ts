@@ -1,5 +1,4 @@
 import * as firebase from 'firebase';
-import { UserInteraction } from '../interactions';
 
 // Configure Firebase.
 const config = {
@@ -16,9 +15,5 @@ const settings = { /* your settings... */ timestampsInSnapshots: true };
 // Initialize other services on firebase instance
 const firestore = app.firestore(); // <- needed if using firestore
 firestore.settings(settings);
-
-app
-  .auth()
-  .onAuthStateChanged(user => (UserInteraction.handleAuthEvent as any)(user));
 
 export default app;
