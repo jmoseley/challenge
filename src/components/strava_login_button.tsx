@@ -39,7 +39,7 @@ export interface StateProps {
 
 export interface Props extends StateProps {}
 
-class LoginButton extends React.Component<Props> {
+class StravaLoginButton extends React.Component<Props> {
   public styles: any = dapper.reactTo(this, STYLES);
 
   public render() {
@@ -82,4 +82,4 @@ const mapStateToProps = (state: GlobalState) => {
   };
 };
 
-export default connect(mapStateToProps)(LoginButton);
+export default connect(mapStateToProps)(StravaLoginButton);

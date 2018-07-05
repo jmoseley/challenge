@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import styled from 'styled-components';
 
 import { Location } from 'history';
+import { withFirebase } from 'react-redux-firebase';
 import AcceptChallengeCard from '../components/accept_challenge_card';
 import ActivityCard from '../components/activity_card';
 import ChallengeCard, {
@@ -12,8 +13,13 @@ import ChallengeCard, {
 } from '../components/challenge_card';
 import CreateChallenge from '../components/create_challenge';
 import NavBar from '../components/nav_bar';
+// import Log from '../lib/log';
 import { Activity, ChallengeInvite, User } from '../models';
 import { GlobalState } from '../state';
+
+if (process.env.NODE_ENV !== 'production') {
+  localStorage.setItem('debug', 'challenge-app:*');
+}
 
 const CoverWrapper = styled.div`
   margin: 0;
@@ -127,7 +133,7 @@ class HomeScene extends React.Component<Props> {
         {this.props.challenges.map(challenge => {
           if (
             !this.props.currentUser ||
-            !_.includes(challenge.members, this.props.currentUser._id)
+            !_.includes(challenge.members, this.props.currentUser.id)
           ) {
             return;
           }
@@ -184,12 +190,14 @@ class HomeScene extends React.Component<Props> {
   };
 }
 
-const mapStateToProps = (state: GlobalState) => ({
-  challengeInvites: [],
-  challenges: [],
-  currentUser: _.get(state, 'user.user'),
-  loading: false,
-  recentRides: [],
-});
+const mapStateToProps = (state: GlobalState) => {
+  return {
+    challengeInvites: [],
+    challenges: [],
+    currentUser: _.get(state, 'interactions.user.user'),
+    loading: !_.get(state, 'firebase.auth.isLoaded', false),
+    recentRides: [],
+  };
+};
 
-export default connect<StateProps>(mapStateToProps)(HomeScene);
+export default withFirebase(connect<StateProps>(mapStateToProps)(HomeScene));

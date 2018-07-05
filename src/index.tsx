@@ -3,17 +3,12 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { Route } from 'react-router-dom';
-import {
-  ConnectedRouter,
-  routerMiddleware,
-  routerReducer,
-} from 'react-router-redux';
-import { applyMiddleware, combineReducers, createStore } from 'redux';
-import { reducer as formReducer } from 'redux-form';
-import { combineInteractions } from 'redux-interactions';
+import { ConnectedRouter } from 'react-router-redux';
 
 import './index.css';
-import * as interactions from './interactions';
+import createStore from './lib/create_store';
+// Configure firebase.
+import './lib/firebase';
 import registerServiceWorker from './registerServiceWorker';
 import Home from './scenes/home';
 import Profile from './scenes/profile';
@@ -21,18 +16,8 @@ import Profile from './scenes/profile';
 registerServiceWorker();
 
 const history = createBrowserHistory();
-const middleware = routerMiddleware(history);
 
-const store = createStore(
-  combineReducers({
-    ...combineInteractions({
-      user: interactions.UserInteraction,
-    }),
-    form: formReducer,
-    routing: routerReducer,
-  }),
-  applyMiddleware(middleware),
-);
+const store = createStore(history);
 
 ReactDOM.render(
   <Provider store={store}>

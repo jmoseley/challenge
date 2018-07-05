@@ -55,7 +55,7 @@ export default class ChallengeCard extends React.Component<Props, State> {
       <div className={this.styles.challenge}>
         <h3 className={this.styles.title}>{this.props.challenge.name}</h3>
         <span>{this.props.challenge.distanceMiles} miles</span>
-        {this.props.challenge.creatorId === this.props.currentUser._id &&
+        {this.props.challenge.creatorId === this.props.currentUser.id &&
           this.renderOptions()}
         {this.renderParticipants()}
       </div>
@@ -143,7 +143,7 @@ export default class ChallengeCard extends React.Component<Props, State> {
             ...user,
             activities,
           }}
-          key={user._id}
+          key={user.id}
           goal={this.props.challenge.distanceMiles}
         />,
       );

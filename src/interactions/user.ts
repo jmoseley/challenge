@@ -1,5 +1,7 @@
+import { UserInfo } from 'firebase';
 import update from 'immutability-helper';
 import { reducer } from 'redux-interactions';
+
 import { User } from '../models';
 import RSA from '../oauth_providers/auth_service';
 import { stravaProvider } from '../oauth_providers/strava';
@@ -14,13 +16,17 @@ const initialState = { ...unauthenticatedState };
 
 const stravaSession = RSA.restoreSession(stravaProvider);
 if (stravaSession) {
-  initialState.isLoggedIn = true;
   initialState.services = {
     strava: { accessToken: stravaSession.accessToken },
   };
 }
 
-class UserReducer extends BaseInteraction {
+class UserInteraction extends BaseInteraction {
+  constructor() {
+    super();
+    this.initialState = initialState;
+  }
+
   @reducer
   public loginUserWithStrava(
     scopedState: UserState,
@@ -34,6 +40,33 @@ class UserReducer extends BaseInteraction {
       user: { $set: user },
     });
   }
+
+  @reducer
+  public handleAuthLogoutEvent(scopedState: UserState) {
+    return update(scopedState, {
+      isLoggedIn: { $set: false },
+      user: { $set: undefined },
+    });
+  }
+
+  @reducer
+  public handleAuthLoginEvent(
+    scopedState: UserState,
+    userInfo: UserInfo,
+    userId: string,
+  ) {
+    const user: User = {
+      email: userInfo.email || 'unknown_user@example.com',
+      id: userId,
+      name: userInfo.displayName || 'Unknown User',
+      preferences: {},
+    };
+
+    return update(scopedState, {
+      isLoggedIn: { $set: true },
+      user: { $set: user },
+    });
+  }
 }
 
-export default new UserReducer();
+export default new UserInteraction();
