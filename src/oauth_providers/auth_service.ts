@@ -1,5 +1,6 @@
 import * as _ from 'lodash';
 import * as uuid from 'uuid';
+import log from '../lib/log';
 
 const sessionKey = 'session';
 
@@ -19,7 +20,7 @@ export interface IAuthenticationService {
     provider: IProvider<T>,
     storage?: Storage,
     localWindow?: Window,
-  ): Promise<T>;
+  ): Promise<T | null>;
   restoreSession<T>(provider: IProvider<T>, storage?: Storage): T | undefined;
   invalidateSession(storage?: Storage): void;
   getAccessToken<T>(
@@ -34,7 +35,7 @@ const service: IAuthenticationService = {
     provider: IProvider<T>,
     storage: Storage = window.localStorage,
     localWindow: Window = window,
-  ): Promise<T> {
+  ): Promise<T | null> {
     // Create unique request key
     const requestKey = `react-simple-auth-request-key-${uuid.v4()}`;
 
@@ -60,48 +61,53 @@ const service: IAuthenticationService = {
       windowOptionString,
     );
 
-    return await new Promise<any>((resolve, reject) => {
-      // Poll for when the is closed
-      const checkWindow = async (lw: Window | null) => {
-        // Window not open yet.
-        if (!lw) {
-          setTimeout(() => checkWindow(lw), 100);
-          return;
-        }
-        // If window is still open check again later
-        if (!lw.closed) {
-          setTimeout(() => checkWindow(lw), 100);
-          return;
-        }
+    try {
+      return await new Promise<any>((resolve, reject) => {
+        // Poll for when the is closed
+        const checkWindow = async (lw: Window | null) => {
+          // Window not open yet.
+          if (!lw) {
+            setTimeout(() => checkWindow(lw), 100);
+            return;
+          }
+          // If window is still open check again later
+          if (!lw.closed) {
+            setTimeout(() => checkWindow(lw), 100);
+            return;
+          }
 
-        const redirectUrl = storage.getItem(requestKey);
-        storage.removeItem(requestKey);
+          const redirectUrl = storage.getItem(requestKey);
+          storage.removeItem(requestKey);
 
-        // Window was closed, but never reached the redirect.html due to user closing window or network error during authentication
-        if (typeof redirectUrl !== 'string' || redirectUrl.length === 0) {
-          reject(
-            new Error(
-              `React Simple Auth: Login window was closed by the user or authentication was incomplete and never reached final redirect page.`,
-            ),
-          );
-          return;
-        }
+          // Window was closed, but never reached the redirect.html due to user closing window or network error during authentication
+          if (typeof redirectUrl !== 'string' || redirectUrl.length === 0) {
+            reject(
+              new Error(
+                `React Simple Auth: Login window was closed by the user or authentication was incomplete and never reached final redirect page.`,
+              ),
+            );
+            return;
+          }
 
-        // Window was closed, and reached the redirect.html; however there still might have been error during authentication, check url
-        const error = provider.extractError(redirectUrl);
-        if (error) {
-          reject(error);
-          return;
-        }
+          // Window was closed, and reached the redirect.html; however there still might have been error during authentication, check url
+          const error = provider.extractError(redirectUrl);
+          if (error) {
+            reject(error);
+            return;
+          }
 
-        // Window was closed, reached redirect.html and correctly added tokens to the url
-        const session = await provider.extractSession(redirectUrl);
-        storage.setItem(sessionKey, JSON.stringify(session));
-        resolve(session);
-      };
+          // Window was closed, reached redirect.html and correctly added tokens to the url
+          const session = await provider.extractSession(redirectUrl);
+          storage.setItem(sessionKey, JSON.stringify(session));
+          resolve(session);
+        };
 
-      checkWindow(loginWindow);
-    });
+        checkWindow(loginWindow);
+      });
+    } catch (e) {
+      log.error(`AuthService`, `Error performing login`, e);
+      return null;
+    }
   },
 
   restoreSession<T>(

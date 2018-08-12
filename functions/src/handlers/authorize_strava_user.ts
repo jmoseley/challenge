@@ -14,8 +14,10 @@ const authorizeStravaUser = createHandler(async request => {
 
   // Fetch the user.
   strava.athlete.accessToken = accessToken;
-  const athlete = await strava.athlete.getLoggedInAthlete();
-  console.log(athlete);
+  const response = await strava.athlete.getLoggedInAthlete();
+  const athlete = response.body;
+
+  return { ...athlete, accessToken };
 });
 
 export default authorizeStravaUser;

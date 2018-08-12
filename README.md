@@ -2,6 +2,11 @@
 
 Firebase powered react app.
 
+To Run:
+
+1. In one terminal, execute `yarn start`. This starts the react app.
+2. In another, execute `firebase serve --only function`. This starts the backend functions.
+
 This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).
 
 Below you will find some information on how to perform common tasks.<br>

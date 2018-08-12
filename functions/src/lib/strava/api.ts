@@ -887,10 +887,6 @@ export class LatLng extends Array<number> {
     baseName: string;
     type: string;
   }> = [];
-
-  static getAttributeTypeMap() {
-    return super.getAttributeTypeMap().concat(LatLng.attributeTypeMap);
-  }
 }
 
 export class MembershipApplication {
@@ -2105,12 +2101,6 @@ export class TimedZoneDistribution extends Array<TimedZoneRange> {
     baseName: string;
     type: string;
   }> = [];
-
-  static getAttributeTypeMap() {
-    return super
-      .getAttributeTypeMap()
-      .concat(TimedZoneDistribution.attributeTypeMap);
-  }
 }
 
 export class UpdatableActivity {
@@ -2292,10 +2282,6 @@ export class ZoneRanges extends Array<ZoneRange> {
     baseName: string;
     type: string;
   }> = [];
-
-  static getAttributeTypeMap() {
-    return super.getAttributeTypeMap().concat(ZoneRanges.attributeTypeMap);
-  }
 }
 
 export class Zones {
